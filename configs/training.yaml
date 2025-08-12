@@ -1,0 +1,66 @@
+# Training configuration for candlestick pattern classification
+
+# Model configuration
+model:
+  type: "simple"              # "simple" (ResNet18) or "custom" (small CNN)
+  num_classes: 5              # Number of pattern classes
+  pretrained: true            # Use ImageNet pretrained weights
+
+# Data configuration
+data:
+  image_size: 224             # Input image size (width=height)
+  batch_size: 16              # Reduced batch size for RTX 4050 6GB VRAM
+  num_workers: 2              # Reduced workers to prevent memory issues
+  pin_memory: true            # Pin memory for faster GPU transfer
+
+# Training configuration
+training:
+  num_epochs: 50              # Maximum number of training epochs
+  learning_rate: 1e-3         # Initial learning rate
+  weight_decay: 1e-4          # Weight decay for regularization
+  gradient_clip: 1.0          # Gradient clipping value
+  
+  # Learning rate scheduling
+  scheduler:
+    type: "cosine"            # "cosine", "step", or "plateau"
+    warmup_epochs: 5          # Number of warmup epochs
+    min_lr: 1e-6              # Minimum learning rate
+  
+  # Early stopping
+  early_stopping:
+    patience: 10              # Number of epochs to wait for improvement
+    min_delta: 0.001          # Minimum change to qualify as improvement
+  
+  # Loss function
+  loss:
+    type: "weighted_ce"       # "ce" (CrossEntropy) or "weighted_ce"
+    label_smoothing: 0.1      # Label smoothing factor
+
+# Validation configuration
+validation:
+  frequency: 1                # Validate every N epochs
+  save_best: true             # Save best model based on validation metric
+  
+# Model saving
+model_saving:
+  save_dir: "models"          # Directory to save models
+  save_frequency: 5           # Save model every N epochs
+  keep_last: 3                # Keep last N model checkpoints
+  
+# Hardware configuration
+hardware:
+  device: "auto"              # "auto", "cuda", or "cpu"
+  mixed_precision: true       # Use mixed precision training (faster, good for RTX 4050)
+  deterministic: false        # Set deterministic mode for reproducibility
+  memory_efficient: true      # Enable memory-efficient training for RTX 4050
+
+# Logging and monitoring
+logging:
+  log_frequency: 10           # Log every N batches
+  tensorboard: true           # Enable TensorBoard logging
+  wandb: false                # Enable Weights & Biases logging
+  
+# Evaluation metrics
+metrics:
+  primary: "f1_macro"         # Primary metric for model selection
+  secondary: ["accuracy", "precision", "recall"]  # Secondary metrics

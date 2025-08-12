@@ -1,0 +1,25 @@
+timeframe:
+  start: "2010-01-01"
+  end: "2024-12-31"
+
+render:
+  window_size: 20               # reduced from 40 to 20 bars for clearer visualization
+  image_size: 224               # final px width=height
+  dpi: 150                      # increased from 100 to 150 for higher resolution
+  up_color: "#16a34a"           # green
+  down_color: "#dc2626"         # red
+  facecolor: "#ffffff"
+  edgecolor: "#ffffff"
+
+split:
+  train_end: "2018-12-31"
+  val_end: "2020-12-31"
+  test_end: "2023-12-31"
+  boundary_buffer_bars: 5       # avoid overlapping windows across splits
+
+io:
+  tickers_file: "configs/tickers.txt"
+  raw_dir: "data/raw"
+  interim_dir: "data/interim"
+  images_dir: "data/images"
+  processed_dir: "data/processed"

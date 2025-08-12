@@ -1,0 +1,69 @@
+1st run
+Class distribution:
+label
+Doji                2818
+SpinningTop         1973
+BearishEngulfing     827
+BullishEngulfing     712
+Hammer               404
+ShootingStar         288
+MorningStar          130
+EveningStar          129
+DarkCloudCover       129
+Piercing              84
+Name: count, dtype: int64
+
+✂️ Step 4: Splitting dataset...
+Loaded 7494 images for splitting
+Split results:
+  Train: 4429 images (2010-02-01 00:00:00 to 2018-12-31 00:00:00)
+  Val:   1058 images (2019-01-02 00:00:00 to 2020-12-31 00:00:00)
+  Test:  1489 images (2021-01-04 00:00:00 to 2023-12-29 00:00:00)
+
+Class distribution:
+Train:
+label
+Doji                1633
+SpinningTop         1201
+BearishEngulfing     488
+BullishEngulfing     428
+Hammer               239
+ShootingStar         171
+DarkCloudCover        77
+EveningStar           72
+MorningStar           68
+Piercing              52
+Name: count, dtype: int64
+
+Val:
+label
+Doji                412
+SpinningTop         255
+BearishEngulfing    111
+BullishEngulfing     94
+Hammer               56
+ShootingStar         47
+EveningStar          29
+DarkCloudCover       25
+Piercing             15
+MorningStar          14
+Name: count, dtype: int64
+
+Test:
+label
+Doji                565
+SpinningTop         377
+BearishEngulfing    167
+BullishEngulfing    152
+Hammer               82
+ShootingStar         44
+MorningStar          41
+EveningStar          26
+DarkCloudCover       22
+Piercing             13
+Name: count, dtype: int64
+
+
+
+
+

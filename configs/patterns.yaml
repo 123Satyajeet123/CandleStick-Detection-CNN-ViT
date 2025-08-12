@@ -1,0 +1,21 @@
+# TA-Lib functions mapped to canonical class names and priority (lower = higher priority)
+# Top 5 most common patterns with more sensitive detection
+patterns:
+  - talib_fn: CDLDOJI
+    label: Doji
+    priority: 1
+  - talib_fn: CDLSPINNINGTOP
+    label: SpinningTop
+    priority: 2
+  - talib_fn: CDLENGULFING
+    label: BullishEngulfing
+    priority: 3
+  - talib_fn: CDLENGULFING
+    label: BearishEngulfing
+    priority: 3
+  - talib_fn: CDLHAMMER
+    label: Hammer
+    priority: 4
+
+min_abs_value: 50              # More sensitive detection (lowered from 70)
+allow_negative: true           # keep bearish patterns too (negative values)
