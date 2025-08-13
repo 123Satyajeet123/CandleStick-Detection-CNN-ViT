@@ -34,7 +34,7 @@ This is a report of an experiment I recently concluded that shows how well Convo
   - [License](#license)
 
 ## Background and Goals
-Why this work? I wanted to really learn ViTs in a realistic finance setting and see how they stack up against CNNs when the data and training recipe change. The goals were simple:
+Why this work? I wanted to learn ViTs in a realistic finance setting and see how they rank against CNNs when the scale of data and configs change. The goals were simple:
 - Can ViTs match or beat a good CNN on candlestick images?
 - How much does dataset size and pretraining matter?
 - Leave behind a clean, reproducible pipeline and a baseline ready for real‑time use.
