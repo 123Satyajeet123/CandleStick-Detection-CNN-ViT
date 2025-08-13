@@ -51,17 +51,17 @@ Why this work? I wanted to really learn ViTs in a realistic finance setting and 
 
 ```mermaid
 flowchart LR
-  A[Tickers + Dates] --> B[Fetch OHLCV (yfinance)]
-  B --> C[Label Patterns (TA‑Lib)]
-  C --> D[Render Windows (mplfinance)]
+  A[Tickers + Dates] --> B[Fetch OHLCV yfinance]
+  B --> C[Label Patterns TA-Lib]
+  C --> D[Render Windows mplfinance]
   D --> E[Images + Manifest]
-  E --> F[Split by Date (walk‑forward)]
-  F --> G1[Train CNN (ResNet34)]
-  F --> G2[Train ViT (DeiT‑Tiny)]
+  E --> F[Split by Date walk-forward]
+  F --> G1[Train CNN ResNet34]
+  F --> G2[Train ViT DeiT-Tiny]
   G1 --> H[Compare on Test]
   G2 --> H
   H --> I[Plots + Report]
-  H --> J[Real‑time Inference (ONNX)]
+  H --> J[Real-time Inference ONNX]
 ```
 
 ## Dataset Preparation
