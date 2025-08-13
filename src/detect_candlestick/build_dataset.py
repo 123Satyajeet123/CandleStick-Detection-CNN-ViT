@@ -4,7 +4,11 @@ import yaml
 from typing import Tuple
 import pandas as pd
 
-from src.detect_candlestick.rendering.renderer import render_window_to_png
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+from detect_candlestick.rendering.renderer import render_window_to_png
 
 def load_yaml(path: str):
     """Load and return YAML configuration file."""

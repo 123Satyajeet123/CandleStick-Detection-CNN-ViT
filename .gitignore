@@ -9,6 +9,12 @@ wheels/
 #data
 data/
 
+#models
+models/*/checkpoint*
+models/*/best*
+models/*/final*
+
+
 # Virtual environments
 .venv
 .env

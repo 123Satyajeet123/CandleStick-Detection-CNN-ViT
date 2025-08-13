@@ -2,10 +2,12 @@ from __future__ import annotations
 import os
 import pandas as pd
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from PIL import Image
 import torchvision.transforms as transforms
 from typing import Dict, List, Tuple
+
+
 
 class CandlestickDataset(Dataset):
     """
@@ -85,21 +87,40 @@ class CandlestickDataset(Dataset):
         
         return weights
 
-def get_transforms(image_size: int = 224) -> transforms.Compose:
+    def get_class_counts(self) -> torch.Tensor:
+        """Return class counts aligned to label indices.
+
+        Returns:
+            torch.Tensor: Tensor of length num_classes where position i is the
+            count for class with index i (according to `label_to_idx`).
+        """
+        counts_series = self.df['label'].value_counts()
+        counts = torch.zeros(len(self.label_to_idx), dtype=torch.long)
+        for label, idx in self.label_to_idx.items():
+            counts[idx] = int(counts_series.get(label, 0))
+        return counts
+
+def get_transforms(image_size: int = 224, train: bool = False) -> transforms.Compose:
     """
-    Get basic transforms for candlestick images.
-    
-    Args:
-        image_size: Target image size (width=height)
-    
-    Returns:
-        transforms.Compose: Basic transforms
+    Build image transforms.
+
+    - Training: light augmentations safe for candlesticks (no flips)
+    - Eval: deterministic resize + normalize
     """
-    return transforms.Compose([
-        transforms.Resize((image_size, image_size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
+    if train:
+
+        return transforms.Compose([
+            transforms.Resize((image_size, image_size)),
+            transforms.ColorJitter(brightness=0.05, contrast=0.05),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
+    else:
+        return transforms.Compose([
+            transforms.Resize((image_size, image_size)),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+        ])
 
 def create_dataloaders(
     train_manifest: str,
@@ -126,24 +147,41 @@ def create_dataloaders(
         tuple: (train_loader, val_loader, test_loader, label_to_idx)
     """
     # Get transforms
-    transform = get_transforms(image_size)
+    train_transform = get_transforms(image_size, train=True)
+    eval_transform = get_transforms(image_size, train=False)
     
     # Create datasets
-    train_dataset = CandlestickDataset(train_manifest, images_dir, transform)
+    train_dataset = CandlestickDataset(train_manifest, images_dir, train_transform)
     
     # Use same label mapping for all datasets
     label_to_idx = train_dataset.label_to_idx
     
-    val_dataset = CandlestickDataset(val_manifest, images_dir, transform, label_to_idx)
-    test_dataset = CandlestickDataset(test_manifest, images_dir, transform, label_to_idx)
+    val_dataset = CandlestickDataset(val_manifest, images_dir, eval_transform, label_to_idx)
+    test_dataset = CandlestickDataset(test_manifest, images_dir, eval_transform, label_to_idx)
     
     # Create dataloaders
+    # Build a WeightedRandomSampler to balance classes in training batches
+    # Compute per-class counts
+    class_counts_series = train_dataset.df['label'].value_counts()
+    # Inverse frequency for class weights
+    class_weight_map: Dict[str, float] = {
+        label: (1.0 / float(class_counts_series[label])) for label in class_counts_series.index
+    }
+    # Per-sample weights from label
+    sample_weights = [class_weight_map[row_label] for row_label in train_dataset.df['label']]
+    sampler = WeightedRandomSampler(
+        weights=torch.DoubleTensor(sample_weights),
+        num_samples=len(sample_weights),
+        replacement=True,
+    )
+
     train_loader = DataLoader(
-        train_dataset, 
-        batch_size=batch_size, 
-        shuffle=True, 
+        train_dataset,
+        batch_size=batch_size,
+        sampler=sampler,
+        shuffle=False,
         num_workers=num_workers,
-        pin_memory=True
+        pin_memory=True,
     )
     
     val_loader = DataLoader(

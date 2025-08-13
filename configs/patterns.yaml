@@ -1,5 +1,3 @@
-# TA-Lib functions mapped to canonical class names and priority (lower = higher priority)
-# Top 5 most common patterns with more sensitive detection
 patterns:
   - talib_fn: CDLDOJI
     label: Doji
@@ -17,5 +15,5 @@ patterns:
     label: Hammer
     priority: 4
 
-min_abs_value: 50              # More sensitive detection (lowered from 70)
+min_abs_value: 50              # lesser means more sensitive detection
 allow_negative: true           # keep bearish patterns too (negative values)

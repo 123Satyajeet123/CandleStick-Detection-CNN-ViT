@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "einops>=0.8.1",
     "matplotlib>=3.10.5",
     "mplfinance>=0.12.10b0",
     "numpy>=2.3.2",
@@ -16,6 +17,7 @@ dependencies = [
     "scikit-learn>=1.7.1",
     "seaborn>=0.13.2",
     "ta-lib>=0.6.5",
+    "timm>=1.0.19",
     "torch>=2.8.0",
     "torchvision>=0.23.0",
     "typer>=0.16.0",

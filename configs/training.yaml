@@ -1,66 +1,78 @@
-# Training configuration for candlestick pattern classification
-
 # Model configuration
 model:
-  type: "simple"              # "simple" (ResNet18) or "custom" (small CNN)
-  num_classes: 5              # Number of pattern classes
-  pretrained: true            # Use ImageNet pretrained weights
+  type: "resnet34"
+  num_classes: 5             
+  pretrained: true            
+
+# ViT configuration
+vit:
+  type: "deit_tiny_pretrained"  #["lightweight", "deit_tiny_pretrained"]
+  params:
+    image_size: 224
+    patch_size: 16          # revert to 16x16 (better generalization observed)
 
 # Data configuration
 data:
-  image_size: 224             # Input image size (width=height)
-  batch_size: 16              # Reduced batch size for RTX 4050 6GB VRAM
-  num_workers: 2              # Reduced workers to prevent memory issues
-  pin_memory: true            # Pin memory for faster GPU transfer
+  image_size: 224           
+  batch_size: 32            
+  num_workers: 4             
+  pin_memory: true          
 
 # Training configuration
 training:
-  num_epochs: 50              # Maximum number of training epochs
-  learning_rate: 1e-3         # Initial learning rate
-  weight_decay: 1e-4          # Weight decay for regularization
-  gradient_clip: 1.0          # Gradient clipping value
+  num_epochs: 60            
+  learning_rate: 3e-4         # Learning rate for CNN
+  vit_learning_rate: 3e-5     # Learning rate for ViT
+
+  # weight decay for CNN
+  cnn_weight_decay: 1e-4          # for CNN stability
+
+  # weight decay for ViT
+  vit_weight_decay: 5e-5          # for ViT stability
+  gradient_clip: 1.0          # for ViT training
   
   # Learning rate scheduling
   scheduler:
-    type: "cosine"            # "cosine", "step", or "plateau"
-    warmup_epochs: 5          # Number of warmup epochs
-    min_lr: 1e-6              # Minimum learning rate
+    type: "cosine"      #["cosine", "step"]       
+    warmup_epochs: 10     
+    min_lr: 1e-7    
   
   # Early stopping
   early_stopping:
-    patience: 10              # Number of epochs to wait for improvement
-    min_delta: 0.001          # Minimum change to qualify as improvement
+    patience: 10           
+    min_delta: 0.001 
   
   # Loss function
   loss:
-    type: "weighted_ce"       # "ce" (CrossEntropy) or "weighted_ce"
-    label_smoothing: 0.1      # Label smoothing factor
+    type: "weighted_ce"       
+    label_smoothing: 0.05    
 
 # Validation configuration
 validation:
-  frequency: 1                # Validate every N epochs
-  save_best: true             # Save best model based on validation metric
+  frequency: 1                
+  save_best: true             
   
 # Model saving
 model_saving:
-  save_dir: "models"          # Directory to save models
-  save_frequency: 5           # Save model every N epochs
-  keep_last: 3                # Keep last N model checkpoints
+  save_dir_cnn: "models/cnn_large"          
+  save_dir_vit: "models/vit_deit_pretrained"
+  save_frequency: 5           
+  keep_last: 3                
   
 # Hardware configuration
 hardware:
   device: "auto"              # "auto", "cuda", or "cpu"
-  mixed_precision: true       # Use mixed precision training (faster, good for RTX 4050)
-  deterministic: false        # Set deterministic mode for reproducibility
-  memory_efficient: true      # Enable memory-efficient training for RTX 4050
+  mixed_precision: true       
+  deterministic: false        
+  memory_efficient: true     
 
 # Logging and monitoring
 logging:
-  log_frequency: 10           # Log every N batches
-  tensorboard: true           # Enable TensorBoard logging
-  wandb: false                # Enable Weights & Biases logging
+  log_frequency: 10       
+  tensorboard: true         
+  wandb: false             
   
 # Evaluation metrics
 metrics:
-  primary: "f1_macro"         # Primary metric for model selection
-  secondary: ["accuracy", "precision", "recall"]  # Secondary metrics
+  primary: "f1_macro"        
+  secondary: ["accuracy", "precision", "recall"]
