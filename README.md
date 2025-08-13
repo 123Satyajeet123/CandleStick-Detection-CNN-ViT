@@ -172,9 +172,9 @@ Artifacts:
   - CSV: `models/comparison/detailed_comparison.csv`
 
 Takeaways:
-- With sufficiently large data and pretraining, ViT reaches CNN-level performance.
+- ViT's are data hungry models, so with sufficiently large data and pretraining, ViT can reach CNN-level performance or even exceed it.
 - For real-time deployment (screen-grab inference), CNN (ResNet34) remains the pragmatic default due to latency and memory advantages.
-
+- 
 ## How to Run
 
 ### Prerequisites
